@@ -1,0 +1,17 @@
+
+# RN model in JAGS #
+
+model{
+  
+  # prior 
+  lambda ~ dlnorm(0,0.001)
+  r ~ dunif(0,1)
+  
+  for(i in 1:nsite){
+    N[i] ~ dpois(lambda)
+    p[i] <- 1-pow(1-r,N[i])
+    y[i] ~ dbin(p[i],v)
+    log(lambda) ~ a1 + park[] + a2 * 
+  }
+
+}
