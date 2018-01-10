@@ -150,7 +150,7 @@ size.sd <- sd(sitecovs$size.m)
 pasize <- (sitecovs$size.m-size.ave)/size.sd
 
 punish.ave <- mean(anthrop$punish)
-punish.sd <- mean(anthrop$punish)
+punish.sd <- sd(anthrop$punish)
 punish <- (anthrop$punish - punish.ave)
 
 reach.ave <- mean(anthrop$reach)

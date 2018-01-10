@@ -153,8 +153,8 @@ size.sd <- sd(sitecovs$size.m)
 pasize <- (sitecovs$size.m-size.ave)/size.sd
 
 punish.ave <- mean(anthrop$punish)
-punish.sd <- mean(anthrop$punish)
-punish <- (anthrop$punish - punish.ave)
+punish.sd <- sd(anthrop$punish)
+punish <- (anthrop$punish - punish.ave)/punish.sd
 
 reach.ave <- mean(anthrop$reach)
 reach.sd <- sd(anthrop$reach)
@@ -251,7 +251,6 @@ obsCovs <- list(camhours=camhours.z, cam_angle=cam_angle.z) ## obsercation cov
 ################ load umf #####################
 
 data.umf<-unmarkedFrameOccu(y=depvar,siteCovs=sitecov.z, obsCovs=obsCovs)
-summary(data.umf)
 ###########################
 m001<-occuRN(~1 ~1, data.umf)
 m002<-occuRN(~camhours + cam_angle ~ele.s + park, data.umf)
