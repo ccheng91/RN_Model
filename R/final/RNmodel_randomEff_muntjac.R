@@ -102,7 +102,48 @@ inits <- function() list(N = y+1)
 
 # Takes 20+ mins:
 ( fit.fixed <- jags(jagsData, inits, wanted, model.file="model_fixedEff.txt", DIC=FALSE,    # test run
-                    n.chains=3, n.iter=1000000, n.adapt=10000, n.thin=100, parallel=FALSE) )
+                    n.chains=3, n.iter=1500000, n.adapt=10000,n.burnin = 50000, n.thin=100, parallel=FALSE) )
 par <- c("a1", "a2", "a3", "a4", "a5", "a6", "b1")
-whiskerplot(fit.fixed, parameters = par)
+
+abu <- fit.fixed$sims.list$N
+co <- colMeans(abu)
+mean(co)
+sd(co)
+sum(co)
+
+a1 <- fit.fixed$sims.list$a1
+a2 <- fit.fixed$sims.list$a2
+a3 <- fit.fixed$sims.list$a3
+a4 <- fit.fixed$sims.list$a4
+a5 <- fit.fixed$sims.list$a5
+a6 <- fit.fixed$sims.list$a6
+park <- fit.fixed$sims.list$park
+b1 <- fit.fixed$sims.list$b1
+
+##### beta conf plot ############ beta conf plot ############ beta conf plot #####
+### caterpiller plot 
+
+library(ggplot2)
+cater <- matrix(rep(0), ncol=length(preds),nrow =4)
+for ( i in 1:ncol(preds)) {
+  cater[1,i] <-mean(preds[,i])
+  cater[2,i] <-sd(preds[,i])
+  cater[3,i] <-quantile(preds[,i],prob=0.025)
+  cater[4,i] <-quantile(preds[,i],prob=0.975)
+}
+labs <- c("Elevation","Human Population","Distance","Park Size","Outreach","Punishment","Camera Angle")
+cater <- as.data.frame(cater)
+cater[5,] <- labs
+rownames(cater) <- c("mean","sd","lower","higher","labels")
+cater <- as.data.frame(t(cater)) # reverse row and col
+
+cater[,1] <- as.numeric(as.character(cater[,1])) # the type of data
+cater[,2] <- as.numeric(as.character(cater[,2]))
+cater[,3] <- as.numeric(as.character(cater[,3]))
+cater[,4] <- as.numeric(as.character(cater[,4]))
+cater[,1:4] <- round(cater[,1:4], digits=2)
+
+# order of the bars
+cater$labels <- factor(cater$labels, levels = c("Elevation","Human Population","Distance","Park Size","Outreach","Punishment","Camera Angle"))
+write.csv(cater, file = "data/final/beta_conf_RNmodel_muntjac.csv")
 
